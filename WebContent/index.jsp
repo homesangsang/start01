@@ -164,6 +164,7 @@
 		* 查询列表的ajax
 		*/
 		$("#req").on("click",function(){
+			$("#appendData").empty();
 			$.ajax("${pageContext.request.contextPath}/phone/getAll.do",
 					{
 						dataType:"json",
