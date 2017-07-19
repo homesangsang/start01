@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.mysql.fabric.Response;
+
 import cn.linkcircle.domain.Message;
 import cn.linkcircle.domain.Phone;
 import cn.linkcircle.service.Phone1Service;
@@ -136,7 +138,7 @@ public void ifHmaUsed(@RequestBody Message message, HttpServletResponse response
 		return "modify";
 	}
 	@RequestMapping("/recommand.do")
-	public String recommand(Model model){
+	/*public String recommand(Model model){
 		Long hma = phoneService.recommand();
 		if(hma!=null){
 			model.addAttribute("message", hma );
@@ -144,9 +146,14 @@ public void ifHmaUsed(@RequestBody Message message, HttpServletResponse response
 			model.addAttribute("message", "系统无可用号码" );
 		}
 		return "status";
+	}*/
+	public void recommand(HttpServletResponse response) throws JsonGenerationException, JsonMappingException, IOException{
+		ObjectMapper mapper = new ObjectMapper();
+		response.setContentType("text/html;charset=UTF-8");
+		response.getWriter().println(mapper.writeValueAsString(phoneService.recommand()));
 	}
 	@RequestMapping("/add.do")
-	public String add(
+	/*public String add(
 			@RequestParam("hma")Long hma,
 			@RequestParam("syqye")String syqye,
 			@RequestParam("sfzyong")String sfzyong,
@@ -161,6 +168,22 @@ public void ifHmaUsed(@RequestBody Message message, HttpServletResponse response
 			model.addAttribute("message", "添加失败");
 		}
 		return "status";
+	}*/
+	public void add(@RequestBody Phone phone,HttpServletResponse response) throws JsonGenerationException, JsonMappingException, IOException{
+		ObjectMapper mapper = new  ObjectMapper();
+		System.out.println(mapper.writeValueAsString(phone));
+		Message message = new Message();
+		if(phoneService.add(phone)){
+			message.setHma(phone.getHma());
+			message.setStatus("添加成功");
+			message.setPhone(phone);
+		}else{
+			message.setStatus("添加失败");
+			message.setHma(phone.getHma());
+			message.setPhone(null);
+		}
+		response.setContentType("text/html;charset=UTF-8");
+		response.getWriter().println(mapper.writeValueAsString(message));
 	}
 	@RequestMapping("/delete.do")
 	public String delete(

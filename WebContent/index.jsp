@@ -34,7 +34,7 @@
 			<li class="layui-this">查询号码是被使用</li>
 			<li>新增</li>
 			<li><a id="req">查询</a></li>
-			<li>推荐</li>
+			<li><a id="recommand">推荐</a></li>
 		</ul>
 		<div class="layui-tab-content">
 			<div class="layui-tab-item layui-show">
@@ -78,37 +78,58 @@
 			<div class="layui-tab-item">
 				<h3>插入一条记录</h3>
 
-				<form class="layui-form"
-					action="${pageContext.request.contextPath}/phone/add.do"
-					method="post">
+				<form class="layui-form">
 					<div class="layui-form-item">
 						<label class="layui-form-label">电话号码</label>
 						<div class="layui-input-block">
-							<input class="layui-input" type="text" name="hma"
+							<input id="insert_hma" class="layui-input" type="text" name="hma"
 								placeholder="输入号码" required lay-verify="required">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">企业名称</label>
 						<div class="layui-input-block">
-							<input class="layui-input" type="text" name="syqye"
+							<input id="insert_syqye" class="layui-input" type="text" name="syqye"
 								placeholder="输入企业名称" required lay-verify="required">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">使用说明</label>
 						<div class="layui-input-block">
-							<input class="layui-input" type="text" name="sfzyong"
+							<input id="insert_sfzyong" class="layui-input" type="text" name="sfzyong"
 								placeholder="输入备注" required lay-verify="required">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<div class="layui-input-block">
-							<input class="layui-btn layui-btn-primary" type="submit"
-								value="submit" />
+							<!-- <input class="layui-btn layui-btn-primary" type="submit"
+								value="submit" /> -->
+								<a id="insert" class="layui-btn">添加</a>
 						</div>
 					</div>
-
+					<div>
+						<table class="layui-table" lay-even lay-skin="nob">
+							<colgroup>
+								<col width="150">
+								<col width="200">
+								<col>
+							</colgroup>
+							<thead>
+								<tr>
+									<th>号码</th>
+									<th>使用企业</th>
+									<th>使用说明</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td id="insert_show_hma"></td>
+									<td id="insert_show_syqye"></td>
+									<td id="insert_show_sfzyong"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</form>
 				<form action="${pageContext.request.contextPath}/phone/add.do"
 					method="post"></form>
@@ -122,7 +143,7 @@
 			</div>
 			<div class="layui-tab-item">
 				<h3>推荐一个可用的号码</h3>
-				<a href="${pageContext.request.contextPath}/phone/recommand.do">查询列表</a>
+				可用号码：<span id="show_recommand"></span>
 			</div>
 		</div>
 	</div>
@@ -196,6 +217,55 @@
 						}
 					});
 		});	
+		/**
+		* 添加一条记录
+		*/
+		$("#insert").on("click",function(){
+			var insert_hma = $("#insert_hma").val();
+			var insert_syqye = $("#insert_syqye").val();
+			var insert_sfzyong = $("#insert_sfzyong").val();
+			console.log(insert_hma);console.log(insert_syqye);console.log(insert_sfzyong);
+			$.ajax("${pageContext.request.contextPath}/phone/add.do",
+					{
+						dataType:"json",
+						type:"post",
+						contentType:"application/json",
+						data:JSON.stringify({hma:insert_hma,syqye:insert_syqye,sfzyong:insert_sfzyong}),
+						async:true,
+						success:function(message){
+							console.log(message);
+							
+							$("#insert_show_hma").text(message.hma);
+							layer.msg(message.status);
+							if(message.phone!=null){
+								$("#insert_show_syqye").text(message.phone.syqye);
+								$("#insert_show_sfzyong").text(message.phone.sfzyong);
+							}
+						},
+						error:function(){
+							console.log("数据发送失败");
+						}
+					});
+		});
+		/**
+		* 号码推荐
+		*/
+		$("#recommand").on("click",function(){
+			$.ajax("${pageContext.request.contextPath}/phone/recommand.do",
+					{
+						dataType:"json",
+						type:"post",
+						contentType:"application/json",
+						async:true,
+						success:function(data){
+							console.log(data);
+							$("#show_recommand").text(data);
+						},
+						error:function(){
+							console.log("数据发送失败");
+						}
+					});
+		});
 	</script>
 
 </body>
