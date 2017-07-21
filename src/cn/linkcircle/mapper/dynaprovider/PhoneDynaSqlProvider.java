@@ -3,6 +3,7 @@ package cn.linkcircle.mapper.dynaprovider;
 import org.apache.ibatis.jdbc.SQL;
 
 import cn.linkcircle.domain.Phone;
+import net.sf.jsqlparser.statement.select.Limit;
 
 public class PhoneDynaSqlProvider {
 	/**

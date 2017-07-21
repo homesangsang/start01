@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.annotations.UpdateProvider;
 
@@ -26,4 +27,6 @@ public interface PhoneMapper {
 	int deletePhone(Phone phone);
 	@Select("select * from phone")
 	List<Phone> list();
+	@Select("select * from phone limit #{pageNumber},#{pageSize}")
+	List<Phone> listByPage(@Param("pageNumber")int pageNumber,@Param("pageSize")int pageSize);
 }

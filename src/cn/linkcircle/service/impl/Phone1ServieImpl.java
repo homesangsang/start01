@@ -1,5 +1,7 @@
 package cn.linkcircle.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,4 +20,8 @@ public class Phone1ServieImpl implements Phone1Service {
 		return phoneMapper.selectHma(hma);
 	}
 
+	@Override
+	public List<Phone> listByPage(int pageNumber, int pageSize) {
+		return phoneMapper.listByPage((pageNumber-1)*pageSize, pageSize);
+	}
 }

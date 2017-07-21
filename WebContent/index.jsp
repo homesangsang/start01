@@ -10,6 +10,8 @@
 <title>测试 接受 JSON格式的数据</title>
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath }/layui/css/layui.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/css/b.page.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath }/css/b.page.bootstrap3.css">
 </head>
 <body>
 	<ul class="layui-nav">
@@ -37,6 +39,7 @@
 			<li><a id="recommand">推荐</a></li>
 		</ul>
 		<div class="layui-tab-content">
+			<!-- 查询号码是被使用 -->
 			<div class="layui-tab-item layui-show">
 				<form class="layui-form">
 					<!--  input type="submit" value="submit"/>-->
@@ -75,6 +78,7 @@
 					</div>
 				</form>
 			</div>
+			<!-- 新增 -->
 			<div class="layui-tab-item">
 				<h3>插入一条记录</h3>
 
@@ -134,13 +138,17 @@
 				<form action="${pageContext.request.contextPath}/phone/add.do"
 					method="post"></form>
 			</div>
+			<!-- 查询 -->
 			<div class="layui-tab-item">
 				<h3>查询列表</h3>
 
 				<a href="${pageContext.request.contextPath }/phone/download.do"
 					target="_blank">导出excel文件</a>
-				<div id="appendData" style="margin-top: 5px"></div>
+				<div id="appendData" style="margin-top: 5px">
+					<div id="appendDataIn"></div>
+				</div>
 			</div>
+			<!-- 推荐 -->
 			<div class="layui-tab-item">
 				<h3>推荐一个可用的号码</h3>
 				可用号码：<span id="show_recommand"></span>
@@ -152,6 +160,7 @@
 	<script
 		src="${pageContext.request.contextPath }/js/jquery-1.11.3.min.js"></script>
 	<script src="${pageContext.request.contextPath }/layui/layui.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath }/js/b.page.js"></script>
 	<script src="${pageContext.request.contextPath }/js/json2.js"></script>
 	<script>
 		layui.use(['element','layer'], function(){
@@ -164,13 +173,35 @@
 		* 查询列表的ajax
 		*/
 		$("#req").on("click",function(){
+			$("#appendDataIn").empty();
+			$("#appendData").bPage({
+				url:'${pageContext.request.contextPath}/phone/getAll.do',
+				asyncLoad:true,
+				pageSizeMenu:[5,10,20,40,100,200],
+				serverSidePage:false,
+				render:function(data){
+					$("#appendDataIn").empty();
+					console.log(data);
+					$.each(data,function(index,data){
+						var one = '<div>'+'<form action="${pageContext.request.contextPath}/phone/modify.do">'+
+						'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+data.hma+'"/>'+
+						'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+data.syqye+'"/>'+
+						'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+data.sfzyong+'"/>'+
+						'<a class="layui-btn layui-btn-denger" style="margin-left:3px" href="${pageContext.request.contextPath}/phone/delete.do?hma='+data.hma+'&syqye='+data.syqye+'&sfzyong='+data.sfzyong+'">删除</a></span>'+
+								'<span><input class="layui-btn layui-btn-primary" style="margin-left:5px" type="submit" value="修改" /></span>'
+								+'</div>';
+						$("#appendDataIn").append(one);
+					});
+				}
+			});
+		});
+		/* $("#req").on("click",function(){
 			$("#appendData").empty();
 			$.ajax("${pageContext.request.contextPath}/phone/getAll.do",
 					{
 						dataType:"json",
 						type:"post",
 						contentType:"application/json",
-						/* data:JSON.stringify({type:"list"}), */
 						async:true,
 						success:function(data){
 							console.log(data);
@@ -190,7 +221,7 @@
 							console.log("数据发送失败");
 						}
 					});
-		});
+		}); */
 		/**
 		* 查询号码是否被使用
 		*/

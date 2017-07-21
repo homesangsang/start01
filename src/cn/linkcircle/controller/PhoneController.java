@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.mysql.fabric.Response;
-
 import cn.linkcircle.domain.Message;
 import cn.linkcircle.domain.Phone;
 import cn.linkcircle.service.Phone1Service;
@@ -114,11 +112,21 @@ public void ifHmaUsed(@RequestBody Message message, HttpServletResponse response
 		 
 		return ;
 	}*/
-	public void getAll(HttpServletResponse response) throws JsonGenerationException, JsonMappingException, IOException{
+	/*public void getAll(HttpServletResponse response) throws JsonGenerationException, JsonMappingException, IOException{
 		ObjectMapper mapper = new ObjectMapper();
 		response.setContentType("text/html;charset=UTF-8");
 		List<Phone> list = phoneService.getAll();
 		System.out.println(mapper.writeValueAsString(list));
+		response.getWriter().println(mapper.writeValueAsString(list));
+	}*/
+	public void getAll(
+			@RequestParam("pageNumber")int pageNumber,
+			@RequestParam("pageSize")int pageSize,
+			HttpServletResponse response) throws JsonGenerationException, JsonMappingException, IOException{
+		ObjectMapper mapper = new ObjectMapper();
+		response.setContentType("text/html;charset=UTF-8");
+		List<Phone> list = phone1Service.listByPage(pageNumber, pageSize);
+		System.out.println("pageNumber:"+pageNumber+"  pageSize:"+pageSize+mapper.writeValueAsString(list));
 		response.getWriter().println(mapper.writeValueAsString(list));
 	}
 	
@@ -211,7 +219,6 @@ public void ifHmaUsed(@RequestBody Message message, HttpServletResponse response
 			    			).append("\t").append(list.get(i).getSfzyong()).append("\n");
 		          }
 		      }
-		      String excelString = excelBuf.toString();
 		      model.addAttribute("excel",excelBuf.toString());
 		      System.out.println(excelBuf.toString());
 		     return "excel";
