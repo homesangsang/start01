@@ -144,9 +144,8 @@
 
 				<a href="${pageContext.request.contextPath }/phone/download.do"
 					target="_blank">导出excel文件</a>
-				<div id="appendData" style="margin-top: 5px">
-					<div id="appendDataIn"></div>
-				</div>
+				<div id="appendData" style="margin-top: 5px"></div>
+				<div id="appendData_page"></div>
 			</div>
 			<!-- 推荐 -->
 			<div class="layui-tab-item">
@@ -157,9 +156,9 @@
 	</div>
 
 
-	<script
-		src="${pageContext.request.contextPath }/js/jquery-1.11.3.min.js"></script>
+	<script src="${pageContext.request.contextPath }/js/jquery-1.11.3.min.js"></script>
 	<script src="${pageContext.request.contextPath }/layui/layui.js"></script>
+	<script src="${pageContext.request.contextPath }/laypage/laypage.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath }/js/b.page.js"></script>
 	<script src="${pageContext.request.contextPath }/js/json2.js"></script>
 	<script>
@@ -169,10 +168,64 @@
 	        element.on('tab(demo)', function (data) {
 	        });
 	    });
+		var count;
+		$(document).ready(function(){
+			$.ajax("${pageContext.request.contextPath}/phone/count.do",
+					{
+						dataType:"json",
+						type:"post",
+						contentType:"application/json",
+						//data:JSON.stringify({hma:value}),
+						async:true,
+						success:function(data){
+							count = data;
+							console.log("count:"+count);
+						},
+						error:function(){
+							console.log("获取记录总数失败，请检查刷新当前页面并检查数据库是否开启");
+						}
+					});
+		});
 		/**
 		* 查询列表的ajax
 		*/
-		$("#req").on("click",function(){
+		$("#req").on("click",function (){
+			function demo(curr){
+			$("#appendData").empty();
+				$.getJSON('${pageContext.request.contextPath}/phone/getAll.do',
+						{
+							pageNumber:curr || 1,
+							pageSize:5
+						},
+						function (data) {
+							console.log(data);
+							$.each(data,function(index,phone1){
+								var one = '<div>'+'<form action="${pageContext.request.contextPath}/phone/modify.do">'+
+								'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+phone1.hma+'"/>'+
+								'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+phone1.syqye+'"/>'+
+								'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+phone1.sfzyong+'"/>'+
+								'<a class="layui-btn layui-btn-denger" style="margin-left:3px" href="${pageContext.request.contextPath}/phone/delete.do?hma='+phone1.hma+'&syqye='+phone1.syqye+'&sfzyong='+phone1.sfzyong+'">删除</a></span>'+
+										'<span><input class="layui-btn layui-btn-primary" style="margin-left:5px" type="submit" value="修改" /></span>'
+										+'</div>';
+								$("#appendData").append(one);
+										
+							});
+							laypage({
+								cont: 'appendData_page',
+								pages: Math.ceil(count/5),
+								curr : curr || 1,
+								jump: function(obj,first){
+									if(!first){
+										demo(obj.curr);
+										console.log(obj.curr);
+									}
+								}
+							});
+						});
+				}
+				demo();
+		});
+		/*$("#req").on("click",function(){
 			$("#appendDataIn").empty();
 			$("#appendData").bPage({
 				url:'${pageContext.request.contextPath}/phone/getAll.do',
@@ -183,10 +236,10 @@
 					$("#appendDataIn").empty();
 					console.log(data);
 					$.each(data,function(index,data){
-						var one = '<div>'+'<form action="${pageContext.request.contextPath}/phone/modify.do">'+
+						var one = '<div>'+'<form method="post" action="${pageContext.request.contextPath}/phone/modify.do">'+
 						'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+data.hma+'"/>'+
-						'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+data.syqye+'"/>'+
-						'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+data.sfzyong+'"/>'+
+						'<input class="layui-input-block" style="margin-left:2px" type="text" name="syqye" value="'+data.syqye+'"/>'+
+						'<input class="layui-input-block" style="margin-left:2px" type="text" name="sfzyong" value="'+data.sfzyong+'"/>'+
 						'<a class="layui-btn layui-btn-denger" style="margin-left:3px" href="${pageContext.request.contextPath}/phone/delete.do?hma='+data.hma+'&syqye='+data.syqye+'&sfzyong='+data.sfzyong+'">删除</a></span>'+
 								'<span><input class="layui-btn layui-btn-primary" style="margin-left:5px" type="submit" value="修改" /></span>'
 								+'</div>';
@@ -194,6 +247,31 @@
 					});
 				}
 			});
+		});*/
+		/**
+		* 修改bug，在增加号码的时候，如果号码被占用，则返回“号码被占用的错误”
+		*/
+		$("#insert_hma").blur(function(){
+			var value=$("#insert_hma").val();
+			console.log(value); 
+			$.ajax("${pageContext.request.contextPath}/phone/ifHmaUsed.do",
+					{
+						dataType:"json",
+						type:"post",
+						contentType:"application/json",
+						data:JSON.stringify({hma:value}),
+						async:true,
+						success:function(data){
+							console.log(data);
+							//$("#show_hma").text(data.hma);
+							if(data.phone!=null){
+								layer.msg("号码已经使用，被分配给了"+data.phone.syqye+":"+data.phone.sfzyong+"若不更改号码，则原始号码的信息会被覆盖！");
+							}
+						},
+						error:function(){
+							console.log("数据发送失败");
+						}
+					});
 		});
 		/* $("#req").on("click",function(){
 			$("#appendData").empty();

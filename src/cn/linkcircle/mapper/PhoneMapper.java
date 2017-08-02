@@ -29,4 +29,9 @@ public interface PhoneMapper {
 	List<Phone> list();
 	@Select("select * from phone limit #{pageNumber},#{pageSize}")
 	List<Phone> listByPage(@Param("pageNumber")int pageNumber,@Param("pageSize")int pageSize);
+	/**
+	 * 获取数据库总行数
+	 */
+	@Select("select count(*) from phone")
+	Integer count();
 }

@@ -9,4 +9,6 @@ public interface Phone1Service {
 	public Phone getStatus(Long hma);
 	//分页查询
 	public List<Phone> listByPage(int pageNumber,int pageSize);
+	//查询总行数
+	public Integer count();
 }

@@ -24,4 +24,10 @@ public class Phone1ServieImpl implements Phone1Service {
 	public List<Phone> listByPage(int pageNumber, int pageSize) {
 		return phoneMapper.listByPage((pageNumber-1)*pageSize, pageSize);
 	}
+
+	@Override
+	public Integer count() {
+		return phoneMapper.count();
+	}
+	
 }
