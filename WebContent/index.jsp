@@ -10,31 +10,19 @@
 <title>测试 接受 JSON格式的数据</title>
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath }/layui/css/layui.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath }/css/b.page.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath }/css/b.page.bootstrap3.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath }/css/b.page.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath }/css/b.page.bootstrap3.css">
 </head>
 <body>
 	<ul class="layui-nav">
-		<li class="layui-nav-item">最新活动</li>
-		<li class="layui-nav-item layui-this"><a href="">产品</a></li>
-		<li class="layui-nav-item"><a href="">大数据</a></li>
-		<li class="layui-nav-item"><a href="javascript:;">解决方案</a>
-			<dl class="layui-nav-child">
-				<dd>
-					<a href="">移动模块</a>
-				</dd>
-				<dd>
-					<a href="">后台模板</a>
-				</dd>
-				<dd>
-					<a href="">电商平台</a>
-				</dd>
-			</dl></li>
+		<li class="layui-nav-item">CQT</li>
 	</ul>
 	<div class="layui-tab layui-tab-brief" lay-filter="demo">
 		<ul class="layui-tab-title">
 			<li class="layui-this">查询号码是被使用</li>
-			<li>新增</li>
+			<li><a id="adds">新增</a></li>
 			<li><a id="req">查询</a></li>
 			<li><a id="recommand">推荐</a></li>
 		</ul>
@@ -53,35 +41,38 @@
 					<div class="layui-form-item">
 						<a id="queryIfUsed" class="layui-btn">查询</a>
 					</div>
-					<div>
-						<table class="layui-table" lay-even lay-skin="nob">
-							<colgroup>
-								<col width="150">
-								<col width="200">
-								<col>
-							</colgroup>
-							<thead>
-								<tr>
-									<th>号码</th>
-									<th>使用企业</th>
-									<th>使用说明</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td id="show_hma"></td>
-									<td id="show_syqye"></td>
-									<td id="show_sfzyong"></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
 				</form>
+				<div>
+				
+					<table class="layui-table" lay-even lay-skin="nob">
+						<colgroup>
+							<col width="150">
+							<col width="200">
+							<col>
+						</colgroup>
+						<thead>
+							<tr>
+								<th>号码</th>
+								<th>使用企业</th>
+								<th>使用说明</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td id="show_hma"><input class="layui-input" id="show_hma_value" type="text"></td>
+								<td id="show_syqye"><input class="layui-input" id="show_syqye_value" type="text"></td>
+								<td id="show_sfzyong"><input class="layui-input" id="show_sfzyong_value" type="text"></td>
+								<td id="show_update"><a id="show_update_button" class="layui-btn">更改</a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 			<!-- 新增 -->
 			<div class="layui-tab-item">
 				<h3>插入一条记录</h3>
-
+				可用号码：<span id="show_adds"></span>
 				<form class="layui-form">
 					<div class="layui-form-item">
 						<label class="layui-form-label">电话号码</label>
@@ -93,22 +84,22 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">企业名称</label>
 						<div class="layui-input-block">
-							<input id="insert_syqye" class="layui-input" type="text" name="syqye"
-								placeholder="输入企业名称" required lay-verify="required">
+							<input id="insert_syqye" class="layui-input" type="text"
+								name="syqye" placeholder="输入企业名称" required lay-verify="required">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">使用说明</label>
 						<div class="layui-input-block">
-							<input id="insert_sfzyong" class="layui-input" type="text" name="sfzyong"
-								placeholder="输入备注" required lay-verify="required">
+							<input id="insert_sfzyong" class="layui-input" type="text"
+								name="sfzyong" placeholder="输入备注" required lay-verify="required">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<div class="layui-input-block">
 							<!-- <input class="layui-btn layui-btn-primary" type="submit"
 								value="submit" /> -->
-								<a id="insert" class="layui-btn">添加</a>
+							<a id="insert" class="layui-btn">添加</a>
 						</div>
 					</div>
 					<div>
@@ -156,10 +147,12 @@
 	</div>
 
 
-	<script src="${pageContext.request.contextPath }/js/jquery-1.11.3.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath }/js/jquery-1.11.3.min.js"></script>
 	<script src="${pageContext.request.contextPath }/layui/layui.js"></script>
 	<script src="${pageContext.request.contextPath }/laypage/laypage.js"></script>
-	<script type="text/javascript" src="${pageContext.request.contextPath }/js/b.page.js"></script>
+	<script type="text/javascript"
+		src="${pageContext.request.contextPath }/js/b.page.js"></script>
 	<script src="${pageContext.request.contextPath }/js/json2.js"></script>
 	<script>
 		layui.use(['element','layer'], function(){
@@ -195,24 +188,26 @@
 				$.getJSON('${pageContext.request.contextPath}/phone/getAll.do',
 						{
 							pageNumber:curr || 1,
-							pageSize:5
+							pageSize:10
 						},
 						function (data) {
 							console.log(data);
 							$.each(data,function(index,phone1){
-								var one = '<div>'+'<form action="${pageContext.request.contextPath}/phone/modify.do">'+
-								'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+phone1.hma+'"/>'+
-								'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+phone1.syqye+'"/>'+
-								'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+phone1.sfzyong+'"/>'+
-								'<a class="layui-btn layui-btn-denger" style="margin-left:3px" href="${pageContext.request.contextPath}/phone/delete.do?hma='+phone1.hma+'&syqye='+phone1.syqye+'&sfzyong='+phone1.sfzyong+'">删除</a></span>'+
-										'<span><input class="layui-btn layui-btn-primary" style="margin-left:5px" type="submit" value="修改" /></span>'
+								var one = '<div>'+
+											'<form action="${pageContext.request.contextPath}/phone/modify.do">'+
+												'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+phone1.hma+'"/>'+
+												'<input class="layui-input-block" style="margin-left:2px" type="text" name="syqye" value="'+phone1.syqye+'"/>'+
+												'<input class="layui-input-block" style="margin-left:2px" type="text" name="sfzyong" value="'+phone1.sfzyong+'"/>'+
+												'<span><a class="layui-btn layui-btn-denger" style="margin-left:3px" href="${pageContext.request.contextPath}/phone/delete.do?hma='+phone1.hma+'&syqye='+phone1.syqye+'&sfzyong='+phone1.sfzyong+'">删除</a></span>'+
+														'<span><input class="layui-btn layui-btn-primary" style="margin-left:5px" type="submit" value="修改" /></span>'+
+											'</form>'
 										+'</div>';
 								$("#appendData").append(one);
 										
 							});
 							laypage({
 								cont: 'appendData_page',
-								pages: Math.ceil(count/5),
+								pages: Math.ceil(count/10),
 								curr : curr || 1,
 								jump: function(obj,first){
 									if(!first){
@@ -225,29 +220,6 @@
 				}
 				demo();
 		});
-		/*$("#req").on("click",function(){
-			$("#appendDataIn").empty();
-			$("#appendData").bPage({
-				url:'${pageContext.request.contextPath}/phone/getAll.do',
-				asyncLoad:true,
-				pageSizeMenu:[5,10,20,40,100,200],
-				serverSidePage:false,
-				render:function(data){
-					$("#appendDataIn").empty();
-					console.log(data);
-					$.each(data,function(index,data){
-						var one = '<div>'+'<form method="post" action="${pageContext.request.contextPath}/phone/modify.do">'+
-						'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+data.hma+'"/>'+
-						'<input class="layui-input-block" style="margin-left:2px" type="text" name="syqye" value="'+data.syqye+'"/>'+
-						'<input class="layui-input-block" style="margin-left:2px" type="text" name="sfzyong" value="'+data.sfzyong+'"/>'+
-						'<a class="layui-btn layui-btn-denger" style="margin-left:3px" href="${pageContext.request.contextPath}/phone/delete.do?hma='+data.hma+'&syqye='+data.syqye+'&sfzyong='+data.sfzyong+'">删除</a></span>'+
-								'<span><input class="layui-btn layui-btn-primary" style="margin-left:5px" type="submit" value="修改" /></span>'
-								+'</div>';
-						$("#appendDataIn").append(one);
-					});
-				}
-			});
-		});*/
 		/**
 		* 修改bug，在增加号码的时候，如果号码被占用，则返回“号码被占用的错误”
 		*/
@@ -273,33 +245,6 @@
 						}
 					});
 		});
-		/* $("#req").on("click",function(){
-			$("#appendData").empty();
-			$.ajax("${pageContext.request.contextPath}/phone/getAll.do",
-					{
-						dataType:"json",
-						type:"post",
-						contentType:"application/json",
-						async:true,
-						success:function(data){
-							console.log(data);
-							$.each(data,function(index,phone1){
-								var one = '<div>'+'<form action="${pageContext.request.contextPath}/phone/modify.do">'+
-								'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+phone1.hma+'"/>'+
-								'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+phone1.syqye+'"/>'+
-								'<input class="layui-input-block" style="margin-left:2px" type="text" name="hma" value="'+phone1.sfzyong+'"/>'+
-								'<a class="layui-btn layui-btn-denger" style="margin-left:3px" href="${pageContext.request.contextPath}/phone/delete.do?hma='+phone1.hma+'&syqye='+phone1.syqye+'&sfzyong='+phone1.sfzyong+'">删除</a></span>'+
-										'<span><input class="layui-btn layui-btn-primary" style="margin-left:5px" type="submit" value="修改" /></span>'
-										+'</div>';
-								$("#appendData").append(one);
-										
-							});
-						},
-						error:function(){
-							console.log("数据发送失败");
-						}
-					});
-		}); */
 		/**
 		* 查询号码是否被使用
 		*/
@@ -315,11 +260,11 @@
 						async:true,
 						success:function(data){
 							console.log(data);
-							$("#show_hma").text(data.hma);
+							$("#show_hma_value").val(data.phone.hma);
 							layer.msg(data.status);
 							if(data.phone!=null){
-								$("#show_syqye").text(data.phone.syqye);
-								$("#show_sfzyong").text(data.phone.sfzyong);
+								$("#show_syqye_value").val(data.phone.syqye);
+								$("#show_sfzyong_value").val(data.phone.sfzyong);
 							}
 						},
 						error:function(){
@@ -327,6 +272,35 @@
 						}
 					});
 		});	
+		$("#show_update_button").on("click",function(){
+			var hma=$("#show_hma_value").val();
+			var syqye=$("#show_syqye_value").val();
+			var sfzyong=$("#show_sfzyong_value").val();
+			$.ajax("${pageContext.request.contextPath}/phone/update.do",
+					{
+						dataType:"json",
+						type:"post",
+						contentType:"application/json",
+						data:JSON.stringify({
+							hma:hma,
+							syqye:syqye,
+							sfzyong:sfzyong
+						}),
+						async:true,
+						success:function(data){
+							console.log(data);
+							$("#show_hma_value").text(data.phone.hma);
+							layer.msg(data.status);
+							if(data.phone!=null){
+								$("#show_syqye_value").text(data.phone.syqye);
+								$("#show_sfzyong_value").text(data.phone.sfzyong);
+							}
+						},
+						error:function(){
+							console.log("数据发送失败");
+						}
+					});
+		});
 		/**
 		* 添加一条记录
 		*/
@@ -370,6 +344,22 @@
 						success:function(data){
 							console.log(data);
 							$("#show_recommand").text(data);
+						},
+						error:function(){
+							console.log("数据发送失败");
+						}
+					});
+		});
+		$("#adds").on("click",function(){
+			$.ajax("${pageContext.request.contextPath}/phone/recommand.do",
+					{
+						dataType:"json",
+						type:"post",
+						contentType:"application/json",
+						async:true,
+						success:function(data){
+							console.log(data);
+							$("#show_adds").text(data);
 						},
 						error:function(){
 							console.log("数据发送失败");

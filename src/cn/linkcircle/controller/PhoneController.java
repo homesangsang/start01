@@ -78,6 +78,23 @@ public class PhoneController {
 		}
 		return "modify";
 	}
+	@RequestMapping("/update.do")
+	public void update(@RequestBody Phone phone,HttpServletResponse response) throws JsonGenerationException, JsonMappingException, IOException{
+		ObjectMapper mapper = new  ObjectMapper();
+		System.out.println(mapper.writeValueAsString(phone));
+		Message message = new Message();
+		if(phoneService.modify(phone)){
+			message.setHma(phone.getHma());
+			message.setStatus("修改成功");
+			message.setPhone(phone);
+		}else{
+			message.setStatus("修改失败");
+			message.setHma(phone.getHma());
+			message.setPhone(null);
+		}
+		response.setContentType("text/html;charset=UTF-8");
+		response.getWriter().println(mapper.writeValueAsString(message));
+	}
 	@RequestMapping("/recommand.do")
 	public void recommand(HttpServletResponse response) throws JsonGenerationException, JsonMappingException, IOException{
 		ObjectMapper mapper = new ObjectMapper();
