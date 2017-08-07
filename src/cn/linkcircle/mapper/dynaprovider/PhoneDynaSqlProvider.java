@@ -15,7 +15,7 @@ public class PhoneDynaSqlProvider {
 		return new SQL(){
 			{
 				UPDATE("phone");
-				if(phone.getSyqye()!=null){
+				if(phone.getSyqye()>=0){
 					SET("syqye=#{syqye}");
 				}
 				if(phone.getSfzyong()!=null){
@@ -51,7 +51,7 @@ public class PhoneDynaSqlProvider {
 			if(phone.getHma()!=null && !phone.getHma().equals(0l)){
 				VALUES("hma", "#{hma}");
 			}
-			if(phone.getSyqye()!=null && !phone.getSyqye().equals("")){
+			if(phone.getSyqye()>=0){
 				VALUES("syqye", "#{syqye}");
 			}
 			if(phone.getSfzyong()!=null && !phone.getSfzyong().equals("")){

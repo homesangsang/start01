@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.One;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
@@ -13,6 +14,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.annotations.UpdateProvider;
+import org.apache.ibatis.mapping.FetchType;
 
 import cn.linkcircle.domain.Phone;
 
@@ -34,4 +36,17 @@ public interface PhoneMapper {
 	 */
 	@Select("select count(*) from phone")
 	Integer count();
+	
+	/**
+	 * 根据企业号查询所有号码
+	 */
+	@Select("select * from phone where syqye=#{id}")
+	@Results({
+		@Result(id=true,column="hma",property="hma"),
+		@Result(column="syqye",property="syqye"),
+		@Result(column="sfzyong",property="sfzyong"),
+		@Result(column="id",property="company",
+		one=@One(select="cn.linkcircle.mapper.CompanyMapper.selectById",fetchType=FetchType.EAGER))
+	})
+	List<Phone> selectBySyqye(Integer syqye);
 }

@@ -6,41 +6,68 @@ public class Phone implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6227973744514206129L;
+	private static final long serialVersionUID = -3394051451997450200L;
 	private Long hma;
-	private String syqye;
+	private int syqye;
 	private String sfzyong;
+	
+	private Company company;
+
 	public Long getHma() {
 		return hma;
 	}
+
 	public void setHma(Long hma) {
 		this.hma = hma;
 	}
-	public String getSyqye() {
+
+	public int getSyqye() {
 		return syqye;
 	}
-	public void setSyqye(String syqye) {
+
+	public void setSyqye(int syqye) {
 		this.syqye = syqye;
 	}
+
 	public String getSfzyong() {
 		return sfzyong;
 	}
+
 	public void setSfzyong(String sfzyong) {
 		this.sfzyong = sfzyong;
 	}
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+
 	@Override
 	public String toString() {
-		return "Phone [hma=" + hma + ", syqye=" + syqye + ", sfzyong=" + sfzyong + "]";
+		return "Phone [hma=" + hma + ", syqye=" + syqye + ", sfzyong=" + sfzyong + ", company=" + company + "]";
 	}
-	public Phone(Long hma, String syqye, String sfzyong) {
+
+	public Phone(Long hma, int syqye, String sfzyong, Company company) {
 		super();
 		this.hma = hma;
 		this.syqye = syqye;
 		this.sfzyong = sfzyong;
+		this.company = company;
 	}
+
 	public Phone() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+
+	public Phone(Long hma, int syqye, String sfzyong) {
+		super();
+		this.hma = hma;
+		this.syqye = syqye;
+		this.sfzyong = sfzyong;
 	}
 	
 }
