@@ -63,7 +63,9 @@
 								<td id="show_sfzyong"><input class="layui-input"
 									id="show_sfzyong_value" type="text"></td>
 								<td id="show_update"><a id="show_update_button"
-									class="layui-btn">更改</a></td>
+									class="layui-btn">更改</a><a id="show_delete_button"
+									class="layui-btn">删除</a></td>
+
 							</tr>
 						</tbody>
 					</table>
@@ -230,31 +232,34 @@
 		 */
 		 
 		$("#insert_hma").blur(function() {
-							var value = $("#insert_hma").val();
-							console.log(value);
-							$.ajax("${pageContext.request.contextPath}/phone/ifHmaUsed.do",
-								{
-									dataType : "json",
-									type : "post",
-									contentType : "application/json",
-									data : JSON.stringify({
-										hma : value
-									}),
-									async : true,
-									success : function(data) {
-										console.log(data);
-										//$("#show_hma").text(data.hma);
-										if (data.phone != null) {
-											layer.msg("号码已经使用，被分配给了"
-															+ data.phone.syqye+ ":"+ data.phone.sfzyong
-															+ "若不更改号码，则原始号码的信息会被覆盖！");
-										}
-									},
-									error : function() {
-										console.log("数据发送失败");
-									}
-								});
-						});
+			if($("#insert_hma").val().length!=0){
+				var value = $("#insert_hma").val();
+				console.log(value);
+				$.ajax("${pageContext.request.contextPath}/phone/ifHmaUsed.do",
+					{
+						dataType : "json",
+						type : "post",
+						contentType : "application/json",
+						data : JSON.stringify({
+							hma : value
+						}),
+						async : true,
+						success : function(data) {
+							console.log(data);
+							//$("#show_hma").text(data.hma);
+							if (data.phone != null) {
+								layer.msg("号码已经使用，被分配给了"
+												+ data.phone.syqye+ ":"+ data.phone.sfzyong
+												+ "若不更改号码，则原始号码的信息会被覆盖！");
+							}
+						},
+						error : function() {
+							console.log("数据发送失败");
+						}
+					});
+
+			}
+		});
 		/**
 		 * 查询号码是否被使用
 		 */
@@ -271,7 +276,7 @@
 				async : true,
 				success : function(data) {
 					console.log(data);
-					$("#show_hma_value").val(data.phone.hma);
+					$("#show_hma_value").val(data.hma);
 					layer.msg(data.status);
 					if (data.phone != null) {
 						$("#show_syqye_value").val(data.phone.company.name);
@@ -311,6 +316,33 @@
 				}
 			});
 		});
+		$("#show_delete_button").on("click", function() {
+			var hma = $("#show_hma_value").val();
+			var syqye = $("#show_syqye_value").val();
+			var sfzyong = $("#show_sfzyong_value").val();
+			$.ajax("${pageContext.request.contextPath}/phone/deleteByHma.do", {
+				dataType : "json",
+				type : "post",
+				contentType : "application/json",
+				data : JSON.stringify({
+					hma : hma,
+					syqye : syqye,
+					sfzyong : sfzyong
+				}),
+				async : true,
+				success : function(message) {
+					console.log(message);
+					layer.msg(message.status);
+					$("#show_syqye_value").val('');
+					$("#show_hma_value").val('');
+					$("#show_sfzyong_value").val('');
+				},
+				error : function() {
+					console.log("数据发送失败");
+				}
+			});
+		});
+
 		/**
 		 * 添加一条记录
 		 */

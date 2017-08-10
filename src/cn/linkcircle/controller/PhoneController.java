@@ -23,6 +23,7 @@ import cn.linkcircle.domain.Company;
 import cn.linkcircle.domain.InputPhone;
 import cn.linkcircle.domain.Message;
 import cn.linkcircle.domain.Phone;
+import cn.linkcircle.domain.Phone2;
 import cn.linkcircle.service.CompanyPhone1Service;
 import cn.linkcircle.service.Phone1Service;
 import cn.linkcircle.service.PhoneService;
@@ -120,23 +121,48 @@ public class PhoneController {
 		return "modify";
 	}
 
-	@RequestMapping("/update.do")
-	public void update(@RequestBody Phone phone, HttpServletResponse response)
+	@RequestMapping(value="/update.do",method=RequestMethod.POST)
+	public void update(@RequestBody Phone2 phone, HttpServletResponse response)
 			throws JsonGenerationException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		System.out.println(mapper.writeValueAsString(phone));
-		Message message = new Message();
-		if (phoneService.modify(phone)) {
-			message.setHma(phone.getHma());
-			message.setStatus("修改成功");
-			message.setPhone(phone);
-		} else {
-			message.setStatus("修改失败");
-			message.setHma(phone.getHma());
-			message.setPhone(null);
-		}
 		response.setContentType("text/html;charset=UTF-8");
-		response.getWriter().println(mapper.writeValueAsString(message));
+		System.out.println(mapper.writeValueAsString(phone));
+		Company company = companyPhone1Service.selectCompanyByName(phone.getSyqye());
+		Message message = new Message();
+		if(company!=null){
+			Phone phone1 = new Phone(phone.getHma(),company.getId(),phone.getSfzyong());
+			if (phoneService.modify(phone1)) {
+				message.setHma(phone.getHma());
+				phone1.setCompany(company);
+				message.setPhone(phone1);
+				message.setStatus("修改成功");
+				response.getWriter().println(mapper.writeValueAsString(message));
+			} else {
+				message.setHma(phone.getHma());
+				message.setPhone(null);
+				message.setStatus("修改失败");
+				response.getWriter().println(mapper.writeValueAsString(message));
+			}
+		}else{
+			if(companyPhone1Service.addCompany(phone.getSyqye())){
+				company = companyPhone1Service.selectCompanyByName(phone.getSyqye());
+				if(company!=null){
+					Phone phone1 = new Phone(phone.getHma(),company.getId(),phone.getSfzyong());
+					if (phoneService.modify(phone1)) {
+						message.setHma(phone.getHma());
+						phone1.setCompany(company);
+						message.setPhone(phone1);
+						message.setStatus("修改成功");
+						response.getWriter().println(mapper.writeValueAsString(message));
+					} else {
+						message.setHma(phone.getHma());
+						message.setPhone(null);
+						message.setStatus("修改失败");
+						response.getWriter().println(mapper.writeValueAsString(message));
+					}
+				}
+			}
+		}
 	}
 
 	@RequestMapping("/recommand.do")
@@ -176,6 +202,24 @@ public class PhoneController {
 			model.addAttribute("message", "删除失败");
 		}
 		return "status";
+	}
+	@RequestMapping("deleteByHma.do")
+	public void deleteByHma(@RequestBody Phone2 phone,HttpServletResponse response) throws JsonGenerationException, JsonMappingException, IOException{
+		ObjectMapper mapper = new ObjectMapper();
+		response.setContentType("text/html;charset=UTF-8");
+		Message message = new Message();
+		Company company = companyPhone1Service.selectCompanyByName(phone.getSyqye());
+		if(company!=null){
+			Phone phone1 = new Phone(phone.getHma(),company.getId(),phone.getSfzyong());
+			if(phoneService.delete(phone1)){
+				message.setHma(phone.getHma());
+				message.setStatus("删除成功");
+			}else{
+				message.setHma(phone.getHma());
+				message.setStatus("删除失败");
+			}
+		}
+		response.getWriter().println(mapper.writeValueAsString(message));
 	}
 
 	@RequestMapping(value = "/download.do")

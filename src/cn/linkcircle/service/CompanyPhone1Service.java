@@ -30,6 +30,11 @@ public interface CompanyPhone1Service {
 	 * @return
 	 */
 	List<Phone> selectPhoneBySyqye(Integer syqye);
+	/**
+	 * 通过号码查询电话
+	 * @param hma
+	 * @return
+	 */
 	Phone selectPhoneByHma(Long hma);
 	Company selectCompanyByName(String name);
 	
